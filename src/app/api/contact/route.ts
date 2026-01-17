@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseClient, ContactSubmission } from "@/lib/supabase";
 import { sendAdminNotification, sendUserConfirmation } from "@/lib/email";
 import { z } from "zod";
 
@@ -25,30 +24,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const data: ContactSubmission = result.data;
+    const data = result.data;
 
-    // Insert into Supabase
-    const supabase = getSupabaseClient();
-    const { error } = await supabase.from("contacts").insert([data]);
-
-    if (error) {
-      console.error("Supabase error:", error);
-      return NextResponse.json(
-        { error: "Failed to save contact" },
-        { status: 500 }
-      );
-    }
-
-    // Send email notifications (don't fail the request if email fails)
-    try {
-      await Promise.all([
-        sendAdminNotification(data),
-        sendUserConfirmation(data),
-      ]);
-    } catch (emailError) {
-      console.error("Email sending failed:", emailError);
-      // Continue anyway - the contact was saved successfully
-    }
+    // Send email notifications
+    await Promise.all([
+      sendAdminNotification(data),
+      sendUserConfirmation(data),
+    ]);
 
     return NextResponse.json(
       { message: "Contact submitted successfully" },
