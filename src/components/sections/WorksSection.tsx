@@ -9,36 +9,40 @@ import Link from "next/link";
 
 const works = [
   {
-    title: "ECサイト構築",
+    title: "Scorely",
     category: "Webアプリ開発",
-    description: "アパレルブランドのECサイトをフルスクラッチで開発。決済連携、在庫管理機能を実装。",
-    image: "/images/works/ec-site.jpg",
-    tags: ["Next.js", "Stripe", "Supabase"],
+    description: "instagramのスコアリングを管理するアプリ",
+    image: "/images/works/scorely.jpg",
+    tags: ["Next.js", "Stripe", "Supabase", "Vercel"],
     color: "from-violet-500 to-purple-500",
+    url: "https://scorely.jp",
   },
   {
     title: "コーポレートLP",
     category: "LP制作",
-    description: "BtoB SaaS企業の新規サービス訴求LP。CVR 3.2%を達成。",
-    image: "/images/works/corporate-lp.jpg",
-    tags: ["React", "Tailwind CSS", "Framer Motion"],
+    description: "車販売、修理のLPサイト。LPからの訪問者数前年比145%達成",
+    image: "/images/works/urbanauto-fukuoka.jpg",
+    tags: ["html", "CSS", "低予算", "SEO対策"],
     color: "from-orange-500 to-red-500",
+    url: "https://urbanauto-fukuoka.com",
   },
   {
-    title: "予約管理システム",
+    title: "animaledge",
     category: "Webアプリ開発",
-    description: "美容室向けの予約・顧客管理システム。LINE連携機能付き。",
-    image: "/images/works/reservation.jpg",
-    tags: ["Next.js", "PostgreSQL", "LINE API"],
+    description: "動物飼育に関する会員制のQAサイト",
+    image: "/images/works/animaledge.jpg",
+    tags: ["Wordpress", "SEO対策", "デザインから実装"],
     color: "from-cyan-500 to-blue-500",
+    url: "https://animaledge.jp",
   },
   {
-    title: "採用サイト",
-    category: "LP制作",
-    description: "IT企業の採用特化サイト。応募数が前年比150%に増加。",
-    image: "/images/works/recruitment.jpg",
-    tags: ["Next.js", "microCMS", "Vercel"],
+    title: "MEO対策アプリ",
+    category: "Webアプリ開発",
+    description: "Google Business Profile連携による一括管理及びMEO対策強化アプリ",
+    image: "/images/works/meo.jpg",
+    tags: ["Next.js", "自社サーバ", "GBP連携"],
     color: "from-green-500 to-emerald-500",
+    // url なし = 業務用のため非公開
   },
 ];
 
@@ -107,81 +111,103 @@ export function WorksSection() {
         {/* Works Grid */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <AnimatePresence mode="popLayout">
-            {filteredWorks.map((work, index) => (
-              <motion.div
-                key={work.title}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="group relative"
-              >
-                {/* Card */}
-                <div className="relative bg-card border border-border rounded-3xl overflow-hidden transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2">
-                  {/* Image Area */}
-                  <div className="aspect-video relative overflow-hidden">
-                    <Image
-                      src={work.image}
-                      alt={work.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    {/* Gradient Overlay */}
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent`}
-                    />
+            {filteredWorks.map((work, index) => {
+              const hasUrl = "url" in work && work.url;
+              const CardWrapper = hasUrl
+                ? ({ children }: { children: React.ReactNode }) => (
+                    <a
+                      href={work.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      {children}
+                    </a>
+                  )
+                : ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-foreground/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center backdrop-blur-sm">
-                      <div className="flex items-center gap-2 px-6 py-3 bg-background rounded-full text-foreground font-medium transform scale-90 group-hover:scale-100 transition-transform">
-                        <ExternalLink className="h-4 w-4" />
-                        詳細を見る
+              return (
+                <motion.div
+                  key={work.title}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className={`group relative ${hasUrl ? "cursor-pointer" : ""}`}
+                >
+                  <CardWrapper>
+                    {/* Card */}
+                    <div className={`relative bg-card border border-border rounded-3xl overflow-hidden transition-all duration-500 ${hasUrl ? "group-hover:shadow-2xl group-hover:-translate-y-2" : ""}`}>
+                      {/* Image Area */}
+                      <div className="aspect-video relative overflow-hidden">
+                        <Image
+                          src={work.image}
+                          alt={work.title}
+                          fill
+                          className={`object-cover transition-transform duration-500 ${hasUrl ? "group-hover:scale-110" : ""}`}
+                        />
+                        {/* Gradient Overlay */}
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent`}
+                        />
+
+                        {/* Hover Overlay - リンクがある場合のみ表示 */}
+                        {hasUrl && (
+                          <div className="absolute inset-0 bg-foreground/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center backdrop-blur-sm">
+                            <div className="flex items-center gap-2 px-6 py-3 bg-background rounded-full text-foreground font-medium transform scale-90 group-hover:scale-100 transition-transform">
+                              <ExternalLink className="h-4 w-4" />
+                              サイトを見る
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Category Badge */}
+                        <div className="absolute top-4 left-4">
+                          <span
+                            className={`px-3 py-1.5 bg-gradient-to-r ${work.color} text-white text-xs font-medium rounded-full shadow-lg`}
+                          >
+                            {work.category}
+                          </span>
+                        </div>
+
+                        {/* Number */}
+                        <div className="absolute bottom-4 right-4">
+                          <span className="text-5xl font-bold text-white/20">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-6">
+                        <h3 className={`text-xl font-bold mb-2 flex items-center gap-2 transition-colors ${hasUrl ? "group-hover:text-primary" : ""}`}>
+                          {work.title}
+                          {hasUrl && (
+                            <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </h3>
+                        <p className="text-muted-foreground text-sm mb-4">
+                          {work.description}
+                        </p>
+
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-2">
+                          {work.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-3 py-1 bg-muted text-muted-foreground text-xs rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4">
-                      <span
-                        className={`px-3 py-1.5 bg-gradient-to-r ${work.color} text-white text-xs font-medium rounded-full shadow-lg`}
-                      >
-                        {work.category}
-                      </span>
-                    </div>
-
-                    {/* Number */}
-                    <div className="absolute bottom-4 right-4">
-                      <span className="text-5xl font-bold text-white/20">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2 flex items-center gap-2 group-hover:text-primary transition-colors">
-                      {work.title}
-                      <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-4">
-                      {work.description}
-                    </p>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-2">
-                      {work.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-3 py-1 bg-muted text-muted-foreground text-xs rounded-full"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                  </CardWrapper>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </motion.div>
 

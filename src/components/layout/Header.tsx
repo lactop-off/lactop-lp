@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -22,8 +23,14 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">L</span>
+            <div className="relative w-14 h-14">
+              <Image
+                src="/images/logo/logo.png"
+                alt="Lactop"
+                fill
+                className="object-contain"
+                unoptimized
+              />
             </div>
             <span className="font-bold text-lg">Lactop</span>
           </Link>
